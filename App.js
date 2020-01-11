@@ -7,11 +7,11 @@ import {
 } from 'react-native-gesture-handler';
 import Animated from 'react-native-reanimated';
 
-const {height} = Dimensions.get('screen');
+const {height, width} = Dimensions.get('screen');
 
 function Card() {
     return (
-        <View style={styles.flex} contentContainerStyle={{flexGrow: 1}}>
+        <ScrollView style={styles.flex} contentContainerStyle={{flexGrow: 1}}>
             <Text>shubhanm</Text>
             <Text>shubhanm</Text>
             <Text>shubhanm</Text>
@@ -24,7 +24,7 @@ function Card() {
             <Text>shubhanm</Text>
             <Text>shubhanm</Text>
             <Text>shubhanm</Text>
-        </View>
+        </ScrollView>
     );
 }
 
@@ -57,7 +57,7 @@ export default class CardDrag extends React.PureComponent {
                     state,
                 },
             },
-        ], );
+        ],);
         const tempAnimatedValue = new Animated.Value();
         this.translateY = cond(
             eq(state, State.ACTIVE),
@@ -103,23 +103,28 @@ export default class CardDrag extends React.PureComponent {
 
     render() {
         return (
-            <ScrollView style={{ flex: 1 }} contentContainerStyle={{ flexGrow: 1, backgroundColor: 'grey' }}>
-               <View style={{flex: 1 }}>
-                   <PanGestureHandler
-                       failOffsetY={[0, 100]}
-                       onGestureEvent={this.onGestureEvent}
-                       onHandlerStateChange={this.onGestureEvent}>
-                       <Animated.View
-                           style={{
-                               ...styles.cardContainer,
-                               transform: [{translateY: this.translateY}],
-                           }}>
-                           <View style={{width: 50, height: 50, backgroundColor: 'red'}}/>
-                       </Animated.View>
-                   </PanGestureHandler>
-                   <Card/>
-               </View>
-            </ScrollView>
+            <View style={{flex: 1}}>
+
+                <Animated.View style={{
+                    flex: 1, backgroundColor: 'orange',
+                    transform: [{translateY: this.translateY}]
+                }}>
+                    <Card/>
+                </Animated.View>
+                <PanGestureHandler
+                    onGestureEvent={this.onGestureEvent}
+                    onHandlerStateChange={this.onGestureEvent}>
+                    <Animated.View
+                        style={{
+                            position: 'absolute',
+                            right: 0,
+                            top: 0,
+                            transform: [{translateY: this.translateY}]
+                        }}>
+                        <View style={{width: 50, height: 50, backgroundColor: 'red'}}/>
+                    </Animated.View>
+                </PanGestureHandler>
+            </View>
 
         );
     }
