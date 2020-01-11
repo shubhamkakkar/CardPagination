@@ -5,25 +5,25 @@ import {
     State,
     ScrollView,
 } from 'react-native-gesture-handler';
-import Animated from 'react-native-reanimated';
+import Animated, {min} from 'react-native-reanimated';
 
 const {height, width} = Dimensions.get('screen');
 
-function Card() {
+function Card({title}) {
     return (
-        <ScrollView style={styles.flex} contentContainerStyle={{flexGrow: 1}}>
-            <Text>shubhanm</Text>
-            <Text>shubhanm</Text>
-            <Text>shubhanm</Text>
-            <Text>shubhanm</Text>
-            <Text>shubhanm</Text>
-            <Text>shubhanm</Text>
-            <Text>shubhanm</Text>
-            <Text>shubhanm</Text>
-            <Text>shubhanm</Text>
-            <Text>shubhanm</Text>
-            <Text>shubhanm</Text>
-            <Text>shubhanm</Text>
+        <ScrollView
+            style={[styles.flex, {zIndex: 100}]} contentContainerStyle={{flexGrow: 1, zIndex: 100}}>
+            <Text>{title}</Text>
+            <Text>{title}</Text>
+            <Text>{title}</Text>
+            <Text>{title}</Text>
+            <Text>{title}</Text>
+            <Text>{title}</Text>
+            <Text>{title}</Text>
+            <Text>{title}</Text>
+            <Text>{title}</Text>
+            <Text>{title}</Text>
+            <Text>{title}</Text>
         </ScrollView>
     );
 }
@@ -38,17 +38,24 @@ const {
     lessOrEq,
     lessThan,
     debug,
-    greaterThan,
+    divide,
+    sub
 } = Animated;
+
+const MINHEIGHTFROMTOP = height / 3;
+const MAXHEIGHTFROMTOP = 2 * height / 3;
+
+console.log({MAXHEIGHTFROMTOP, MINHEIGHTFROMTOP})
 
 export default class CardDrag extends React.PureComponent {
     constructor() {
         super();
-        this.translateY = new Animated.Value(height - 100);
-        const dragY = new Animated.Value(height - 100);
+        const animatedHeight = new Animated.Value(height)
+        const maxCardHeight = new Animated.Value(MAXHEIGHTFROMTOP);
+        const minCardHeight = new Animated.Value(MINHEIGHTFROMTOP);
+        this.translateY = new Animated.Value(MINHEIGHTFROMTOP);
+        const dragY = new Animated.Value(0);
         const state = new Animated.Value(-1);
-        const maxCardHeight = new Animated.Value(height / 3);
-        const minCardHeight = new Animated.Value(height - 100);
         const wrong = new Animated.Value(0);
         this.onGestureEvent = event([
             {
@@ -57,7 +64,7 @@ export default class CardDrag extends React.PureComponent {
                     state,
                 },
             },
-        ],);
+        ]);
         const tempAnimatedValue = new Animated.Value();
         this.translateY = cond(
             eq(state, State.ACTIVE),
@@ -75,16 +82,18 @@ export default class CardDrag extends React.PureComponent {
                         [
                             // defined
                             cond(
-                                lessOrEq(dragY, minCardHeight),
+                                eq(dragY, new Animated.Value(0)),
+                                [maxCardHeight],
                                 [
                                     cond(
-                                        greaterThan(dragY, maxCardHeight),
-                                        [dragY],
-                                        [maxCardHeight]
+                                        greaterOrEq(dragY, maxCardHeight),
+                                        [
+                                            maxCardHeight
+                                        ],
+                                        [minCardHeight]
                                     ),
-                                ],
-                                [minCardHeight]
-                            ),
+                                ]
+                            )
                         ],
                         [
                             // not defined
@@ -103,13 +112,16 @@ export default class CardDrag extends React.PureComponent {
 
     render() {
         return (
-            <View style={{flex: 1}}>
-
+            <View style={{
+                flex: 1,
+                ...StyleSheet.absoluteFill,
+            }}>
                 <Animated.View style={{
                     flex: 1, backgroundColor: 'orange',
+                    ...StyleSheet.absoluteFill,
                     transform: [{translateY: this.translateY}]
                 }}>
-                    <Card/>
+                    <Card title={'random text'}/>
                 </Animated.View>
                 <PanGestureHandler
                     onGestureEvent={this.onGestureEvent}
