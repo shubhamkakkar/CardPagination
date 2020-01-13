@@ -96,9 +96,9 @@ export default class CardDrag extends React.PureComponent {
                     <Header customStyle={{transform: [{translateY: this.headerInterpolation}]}}/>
                 </View>
                 <Animated.View style={{
-                    flex: 1, backgroundColor: 'orange',
+                    flex: 1,
                     ...StyleSheet.absoluteFill,
-                    transform: [{translateY: this.translateY}]
+                    transform: [{translateY: this.translateY}],
                 }}>
                     <Card title={'random text'}/>
                 </Animated.View>
@@ -108,11 +108,11 @@ export default class CardDrag extends React.PureComponent {
                     <Animated.View
                         style={{
                             position: 'absolute',
-                            right: 0,
-                            top: 0,
+                            right: 25,
+                            top: 25,
                             transform: [{translateY: this.translateY}]
                         }}>
-                        <View style={{width: 50, height: 50, backgroundColor: 'red'}}/>
+                        <View style={{width: 10, height: 50, backgroundColor: 'red'}}/>
                     </Animated.View>
                 </PanGestureHandler>
             </View>
