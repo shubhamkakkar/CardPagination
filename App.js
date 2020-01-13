@@ -3,30 +3,12 @@ import {StyleSheet, Text, View, Dimensions} from 'react-native';
 import {
     PanGestureHandler,
     State,
-    ScrollView,
 } from 'react-native-gesture-handler';
-import Animated, {min} from 'react-native-reanimated';
+import Animated from 'react-native-reanimated';
+import {Card, Header} from "./src"
 
 const {height, width} = Dimensions.get('screen');
 
-function Card({title}) {
-    return (
-        <ScrollView
-            style={[styles.flex, {zIndex: 100}]} contentContainerStyle={{flexGrow: 1, zIndex: 100}}>
-            <Text>{title}</Text>
-            <Text>{title}</Text>
-            <Text>{title}</Text>
-            <Text>{title}</Text>
-            <Text>{title}</Text>
-            <Text>{title}</Text>
-            <Text>{title}</Text>
-            <Text>{title}</Text>
-            <Text>{title}</Text>
-            <Text>{title}</Text>
-            <Text>{title}</Text>
-        </ScrollView>
-    );
-}
 
 const {
     event,
@@ -35,28 +17,22 @@ const {
     greaterOrEq,
     defined,
     set,
-    lessOrEq,
-    lessThan,
-    debug,
-    divide,
-    sub
+    interpolate,
+    Extrapolate
 } = Animated;
 
 const MINHEIGHTFROMTOP = height / 3;
 const MAXHEIGHTFROMTOP = 2 * height / 3;
 
-console.log({MAXHEIGHTFROMTOP, MINHEIGHTFROMTOP})
 
 export default class CardDrag extends React.PureComponent {
     constructor() {
         super();
-        const animatedHeight = new Animated.Value(height)
         const maxCardHeight = new Animated.Value(MAXHEIGHTFROMTOP);
         const minCardHeight = new Animated.Value(MINHEIGHTFROMTOP);
         this.translateY = new Animated.Value(MINHEIGHTFROMTOP);
         const dragY = new Animated.Value(0);
         const state = new Animated.Value(-1);
-        const wrong = new Animated.Value(0);
         this.onGestureEvent = event([
             {
                 nativeEvent: {
@@ -104,18 +80,21 @@ export default class CardDrag extends React.PureComponent {
                 tempAnimatedValue,
             ]
         );
+        this.headerInterpolation = interpolate(this.translateY, {
+            inputRange: [MINHEIGHTFROMTOP, MAXHEIGHTFROMTOP],
+            outputRange: [100, 250],
+            extrapolate : Extrapolate.CLAMP
+        })
+
     }
 
-    state = {
-        enable: true
-    };
-
     render() {
+
         return (
-            <View style={{
-                flex: 1,
-                ...StyleSheet.absoluteFill,
-            }}>
+            <View style={{flex: 1}}>
+                <View style={{flex: 1, alignItems: 'center',}}>
+                    <Header customStyle={{transform: [{translateY: this.headerInterpolation}]}}/>
+                </View>
                 <Animated.View style={{
                     flex: 1, backgroundColor: 'orange',
                     ...StyleSheet.absoluteFill,
@@ -137,7 +116,6 @@ export default class CardDrag extends React.PureComponent {
                     </Animated.View>
                 </PanGestureHandler>
             </View>
-
         );
     }
 }
